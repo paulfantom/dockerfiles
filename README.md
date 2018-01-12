@@ -1,5 +1,7 @@
 [![Docker Automated build](https://img.shields.io/docker/automated/paulfantom/fedora-molecule.svg)](https://img.shields.io/docker/automated/paulfantom/fedora-molecule.svg)
 
+| System       | Docker Pulls  |
+| ------------ | ------------- |
 | Fedora       | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/fedora-molecule.svg)](https://hub.docker.com/r/paulfantom/fedora-molecule) |
 | CentOS       | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/centos-molecule.svg)](https://hub.docker.com/r/paulfantom/centos-molecule) |
 | Debian 8     | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/debian-molecule.svg)](https://hub.docker.com/r/paulfantom/debian-molecule) |
