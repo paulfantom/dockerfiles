@@ -6,11 +6,13 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
+# hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y systemd python sudo bash iproute2 net-tools \
+    && apt-get install -y --no-install-recommends systemd python sudo bash iproute net-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# hadolint ignore=SC2010,SC2086
 RUN cd /lib/systemd/system/sysinit.target.wants/ \
     && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1
 

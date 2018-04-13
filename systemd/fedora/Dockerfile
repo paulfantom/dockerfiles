@@ -6,8 +6,9 @@ RUN dnf -y update \
     && dnf -y install systemd python python-devel python2-dnf bash iproute net-tools \
     && dnf clean all
 
-RUN cd /lib/systemd/system/sysinit.target.wants/; \
-    for i in *; do [ $i = systemd-tmpfiles-setup.service ] || rm -f $i; done
+# hadolint ignore=SC2164,SC2086
+RUN cd "/lib/systemd/system/sysinit.target.wants/"; \
+    for i in *; do [ $i = systemd-tmpfiles-setup.service ] || rm -f "$i"; done
 
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /etc/systemd/system/*.wants/* \
