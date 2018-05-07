@@ -3,7 +3,7 @@ FROM fedora:latest
 ENV container docker
 
 RUN dnf -y update \
-    && dnf -y install systemd python python-devel python2-dnf bash iproute net-tools \
+    && dnf -y install systemd python python-devel python2-dnf bash iproute net-tools sudo \
     && dnf clean all
 
 # hadolint ignore=SC2164,SC2086

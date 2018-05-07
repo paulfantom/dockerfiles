@@ -3,7 +3,7 @@ FROM centos:7
 ENV container docker
 
 RUN yum -y update \
-    && yum -y install systemd python python bash iproute net-tools \
+    && yum -y install systemd python python bash iproute net-tools sudo \
     && yum clean all
 
 # hadolint ignore=SC2164,SC2086
