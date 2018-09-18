@@ -2,7 +2,7 @@ FROM clearlinux:latest
 
 ENV container docker
 
-RUN swupd bundle-add python2-basic network-basic
+RUN swupd bundle-add sudo python2-basic network-basic
 
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sockets.target.wants/*udev* \
