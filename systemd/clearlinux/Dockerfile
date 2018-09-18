@@ -4,6 +4,8 @@ ENV container docker
 
 RUN swupd bundle-add sudo python2-basic network-basic
 
+RUN echo "root::17792::::::" > /etc/shadow
+
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sockets.target.wants/*udev* \
     /lib/systemd/system/sockets.target.wants/*initctl*
