@@ -4,7 +4,7 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' >> /etc/apt/sources.list
+# RUN echo 'deb http://deb.debian.org/debian jessie-backports main' >> /etc/apt/sources.list
 
 # hadolint ignore=DL3008
 RUN apt-get update \
