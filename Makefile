@@ -11,6 +11,6 @@ check: deps
 
 deps:
 ifndef HADOLINT
-	curl -sL -o /tmp/hadolint "https://github.com/hadolint/hadolint/releases/download/v1.5.0/hadolint-$(uname -s)-$(uname -m)"
+	curl -sL -o /tmp/hadolint "https://github.com/hadolint/hadolint/releases/download/v1.11.1/hadolint-$(uname -s)-$(uname -m)"
 	chmod 700 ${HADOLINT}
 endif

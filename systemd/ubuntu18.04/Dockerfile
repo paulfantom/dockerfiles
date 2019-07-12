@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 
+SHELL /bin/bash -o pipefail
 ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
@@ -12,9 +13,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+WORKDIR /lib/systemd/system/sysinit.target.wants/
 # hadolint ignore=SC2010,SC2086
-RUN cd /lib/systemd/system/sysinit.target.wants/ \
-    && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1
+RUN ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1
 
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /etc/systemd/system/*.wants/* \
@@ -26,6 +27,7 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/plymouth* \
     /lib/systemd/system/systemd-update-utmp*
 
+WORKDIR /
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd
 VOLUME [ "/sys/fs/cgroup" ]
