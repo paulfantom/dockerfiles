@@ -1,4 +1,4 @@
-FROM golang:1.11-stretch
+FROM golang:1.12
 
 RUN apt-get update && \
     apt-get install -y python-yaml jq gawk
