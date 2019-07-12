@@ -7,7 +7,7 @@ all: check
 check: deps
 	# List files which name starts with 'Dockerfile'
 	# eg. Dockerfile, Dockerfile.build, etc.
-	git ls-files --exclude='Dockerfile*' --ignored | xargs --max-lines=1 ${HADOLINT} --ignore DL3008 --ignore SC2164
+	git ls-files --exclude='Dockerfile*' --ignored | xargs --max-lines=1 ${HADOLINT} --config .hadolint.yaml
 
 deps:
 ifndef HADOLINT
