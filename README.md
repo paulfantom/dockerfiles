@@ -4,7 +4,7 @@
 
 | System | Version | Docker Pulls  |
 | ------ | ------- | ------------- |
-| Fedora | latest (27) | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/fedora-molecule.svg)](https://hub.docker.com/r/paulfantom/fedora-molecule) |
+| Fedora | latest | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/fedora-molecule.svg)](https://hub.docker.com/r/paulfantom/fedora-molecule) |
 | CentOS | 7 | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/centos-molecule.svg)](https://hub.docker.com/r/paulfantom/centos-molecule) |
 | Debian | 8 & 9 |[![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/debian-molecule.svg)](https://hub.docker.com/r/paulfantom/debian-molecule) |
 | Ubuntu | 16.04 & 18.04 | [![Docker Pulls](https://img.shields.io/docker/pulls/paulfantom/ubuntu-molecule.svg)](https://hub.docker.com/r/paulfantom/ubuntu-molecule) |
