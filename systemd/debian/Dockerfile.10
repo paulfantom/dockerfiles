@@ -1,14 +1,14 @@
-FROM debian:8
+FROM debian:10
 
 ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
-# RUN echo 'deb http://deb.debian.org/debian jessie-backports main' >> /etc/apt/sources.list
+RUN echo 'deb http://deb.debian.org/debian buster-backports main' >> /etc/apt/sources.list
 
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends systemd python sudo bash iproute net-tools \
+    && apt-get install -y --no-install-recommends systemd python sudo bash iproute2 net-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -20,6 +20,7 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
     /lib/systemd/system/systemd-update-utmp*
 
+RUN ln -s /lib/systemd/system /sbin/init
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd
 VOLUME [ "/sys/fs/cgroup" ]
