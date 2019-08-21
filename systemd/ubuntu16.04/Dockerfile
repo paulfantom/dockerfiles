@@ -9,7 +9,7 @@ RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends systemd python sudo bash iproute net-tools \
+    && apt-get install -y --no-install-recommends systemd python python3 sudo bash iproute net-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

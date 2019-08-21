@@ -3,7 +3,7 @@ FROM centos:7
 ENV container docker
 
 RUN yum -y update \
-    && yum -y install systemd python python bash iproute net-tools sudo \
+    && yum -y install systemd python python3 bash iproute net-tools sudo \
     && yum clean all
 
 WORKDIR /lib/systemd/system/sysinit.target.wants/
