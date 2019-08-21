@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-SHELL /bin/bash -o pipefail
+SHELL [ "/bin/bash", "-o", "pipefail" ]
 ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
