@@ -1,5 +1,0 @@
-# Use container-based infrastructure for quicker build start-up
-sudo: false
-# Use generic image to cut start-up time
-language: generic
-script: make
