@@ -20,6 +20,8 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
     /lib/systemd/system/systemd-update-utmp*
 
+RUN mkdir -p /usr/local/bin && chmod 0755 /usr/local/bin
+
 RUN ln -s /lib/systemd/system /sbin/init
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd
