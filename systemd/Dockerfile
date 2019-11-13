@@ -1,5 +1,6 @@
 # hadolint ignore=DL3007
 FROM clearlinux:latest
+MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
 
