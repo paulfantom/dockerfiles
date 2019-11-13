@@ -1,13 +1,13 @@
-FROM centos:8
+FROM fedora:30
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
 
-RUN yum -y update \
-    && yum -y install systemd python3 bash iproute net-tools sudo \
-    && yum clean all
+RUN dnf -y update \
+    && dnf -y install systemd python python-devel python3-dnf bash iproute net-tools sudo \
+    && dnf clean all
 
-WORKDIR /lib/systemd/system/sysinit.target.wants/
+WORKDIR /lib/systemd/system/sysinit.target.wants
 # hadolint ignore=SC2086
 RUN for i in *; do [ $i = systemd-tmpfiles-setup.service ] || rm -f "$i"; done
 
