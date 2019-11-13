@@ -1,4 +1,5 @@
 FROM debian:9
+MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
 ENV LC_ALL C
