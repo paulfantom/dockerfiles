@@ -1,4 +1,5 @@
 FROM opensuse/leap:15.0
+MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
 
