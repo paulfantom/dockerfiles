@@ -1,10 +1,11 @@
-FROM debian:9
+FROM ubuntu:16.04
+MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo 'deb http://deb.debian.org/debian stretch-backports main' >> /etc/apt/sources.list
+RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -12,17 +13,21 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+WORKDIR /lib/systemd/system/sysinit.target.wants/
+# hadolint ignore=SC2010,SC2086
+RUN ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1
+
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /etc/systemd/system/*.wants/* \
     /lib/systemd/system/local-fs.target.wants/* \
     /lib/systemd/system/sockets.target.wants/*udev* \
     /lib/systemd/system/sockets.target.wants/*initctl* \
-    /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+    /lib/systemd/system/basic.target.wants/* \
+    /lib/systemd/system/anaconda.target.wants/* \
+    /lib/systemd/system/plymouth* \
     /lib/systemd/system/systemd-update-utmp*
 
-RUN mkdir -p /usr/local/bin && chmod 0755 /usr/local/bin
-
-RUN ln -s /lib/systemd/system /sbin/init
+WORKDIR /
 RUN systemctl set-default multi-user.target
 ENV init /lib/systemd/systemd
 VOLUME [ "/sys/fs/cgroup" ]
