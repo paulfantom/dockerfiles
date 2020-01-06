@@ -30,8 +30,8 @@ EOF
 }
 
 backup() {
-        echo "$(date +"%F %T") INFO: Releaseing stale locks"
-        restic unlock
+        echo "$(date +"%F %T") INFO: Releasing all locks"
+        restic unlock --remove-all
         echo "$(date +"%F %T") INFO: checking repository state"
         restic check
         echo "$(date +"%F %T") INFO: starting new backup"
