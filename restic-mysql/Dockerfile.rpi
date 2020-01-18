@@ -1,7 +1,7 @@
 FROM contentar/restic:latest 
 USER root
 
-RUN apk add --no-cache mysql-client jq
+RUN apk add --no-cache mysql-client jq bash
 COPY backup.sh /backup.sh
 
 ENTRYPOINT [ "/backup.sh" ]
