@@ -9,9 +9,11 @@ RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list
 
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends systemd python python3 sudo bash iproute2 net-tools \
+    && apt-get install -y --no-install-recommends ca-certificates systemd python python3 sudo bash iproute2 net-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN dpkg-reconfigure ca-certificates
 
 WORKDIR /lib/systemd/system/sysinit.target.wants/
 # hadolint ignore=SC2010,SC2086
