@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -z "${IRCCLOUD_USERNAME+x}" ]; then
 	echo "ERROR: IRCCLOUD_USERNAME not specified"
@@ -13,7 +13,4 @@ fi
 export IRCCLOUD_USERNAME
 export IRCCLOUD_PASSWORD
 
-while true; do
-	python "/usr/local/src/irccloud/irccloud.py"
-	sleep 5m
-done
+python "/usr/local/src/irccloud/irccloud.py"
