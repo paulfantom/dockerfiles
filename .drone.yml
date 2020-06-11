@@ -16,6 +16,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-amd64
+    context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
@@ -27,6 +28,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-amd64
+    context: rsync
     dockerfile: rsync/Dockerfile
 
 ---
@@ -48,6 +50,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-arm64
+    context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
@@ -59,6 +62,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-arm64
+    context: rsync
     dockerfile: rsync/Dockerfile
 
 ---
@@ -80,6 +84,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-arm
+    context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
@@ -91,6 +96,7 @@ steps:
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-arm
+    context: rsync
     dockerfile: rsync/Dockerfile
 
 ---
@@ -107,10 +113,10 @@ steps:
       from_secret: QUAY_PASSWORD
     target: quay.io/paulfantom/restic-mysql:latest
     template: quay.io/paulfantom/restic-mysql:latest-ARCH
-  platforms:
-    - linux/amd64
-    - linux/arm64
-    - linux/arm
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
 - name: rsync
   image: plugins/manifest
   settings:
@@ -120,10 +126,10 @@ steps:
       from_secret: QUAY_PASSWORD
     target: quay.io/paulfantom/rsync:latest
     template: quay.io/paulfantom/rsync:latest-ARCH
-  platforms:
-    - linux/amd64
-    - linux/arm64
-    - linux/arm
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
 
 depends_on:
   - amd64
