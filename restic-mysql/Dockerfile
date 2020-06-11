@@ -1,6 +1,8 @@
-FROM restic/restic:latest
+# restic/restic is not compatible with ARM
+FROM alpine
 
-RUN apk add --no-cache mysql-client jq
-COPY backup.sh /backup.sh
+RUN apk add --no-cache restic mysql-client jq bash curl
 
-ENTRYPOINT [ "/backup.sh" ]
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
