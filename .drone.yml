@@ -9,6 +9,10 @@ steps:
 - name: restic-mysql
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-amd64
@@ -16,6 +20,10 @@ steps:
 - name: rsync
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-amd64
@@ -33,6 +41,10 @@ steps:
 - name: restic-mysql
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-arm64
@@ -40,6 +52,10 @@ steps:
 - name: rsync
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-arm64
@@ -57,6 +73,10 @@ steps:
 - name: restic-mysql
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-arm
@@ -64,6 +84,10 @@ steps:
 - name: rsync
   image: plugins/docker
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
     tags: latest-arm
@@ -77,6 +101,10 @@ steps:
 - name: restic-mysql
   image: plugins/manifest
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     target: quay.io/paulfantom/restic-mysql:latest
     template: quay.io/paulfantom/restic-mysql:latest-ARCH
   platforms:
@@ -86,6 +114,10 @@ steps:
 - name: rsync
   image: plugins/manifest
   settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
     target: quay.io/paulfantom/rsync:latest
     template: quay.io/paulfantom/rsync:latest-ARCH
   platforms:
