@@ -13,34 +13,38 @@ INSTANCE=${INSTANCE:-"$(hostname)"}
 set -euo pipefail
 
 backup() {
-        echo "$(date +"%F %T") INFO: Releasing all locks"
-        restic unlock --remove-all -v
-        echo "$(date +"%F %T") INFO: checking repository state"
-        restic check
-        echo "$(date +"%F %T") INFO: starting new backup"
-        start=$(date +%s)
-        if [ -n "$DATA_DIRECTORY" ]; then
-            restic backup ${RESTIC_ARGS} --host "${INSTANCE}" "${DATA_DIRECTORY}"
-            DATA="${DATA_DIRECTORY}"
-        elif [ -n "${MYSQL_DATABASE}" ]; then
-            check_db_vars
-            mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE}" --stdin --stdin-filename "${MYSQL_DATABASE}_dump.sql"
-            DATA="${MYSQL_DATABASE}_dump.sql"
-        fi
-        end=$(date +%s)
+	echo "$(date +"%F %T") INFO: Releasing all locks"
+	restic unlock --remove-all -v
+	echo "$(date +"%F %T") INFO: checking repository state"
+	if ! restic check ; then
+		echo "$(date +"%F %T") INFO: creating new repository"
+		restic init
+	fi
 
-        echo "$(date +"%F %T") INFO: Backup finished, exporting statistics"
-        STATS=$(restic stats --json)
-        echo "$STATS"
-        if [ "$STATS" = "" ]; then
-            echo "$(date +"%F %T") ERROR: No backup statistics can be found. Exiting."
-            exit 1
-        fi
+	echo "$(date +"%F %T") INFO: starting new backup"
+	start=$(date +%s)
+	if [ -n "$DATA_DIRECTORY" ]; then
+		restic backup ${RESTIC_ARGS} --host "${INSTANCE}" "${DATA_DIRECTORY}"
+		DATA="${DATA_DIRECTORY}"
+	elif [ -n "${MYSQL_DATABASE}" ]; then
+		check_db_vars
+		mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE}" --stdin --stdin-filename "${MYSQL_DATABASE}_dump.sql"
+		DATA="${MYSQL_DATABASE}_dump.sql"
+	fi
+	end=$(date +%s)
 
-        if [ -z "$PUSHGATEWAY_URL" ]; then
-        	echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
-        else      
-	        cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}"
+	echo "$(date +"%F %T") INFO: Backup finished, exporting statistics"
+	STATS=$(restic stats --json)
+	echo "$STATS"
+	if [ "$STATS" = "" ]; then
+		echo "$(date +"%F %T") ERROR: No backup statistics can be found. Exiting."
+		exit 1
+	fi
+
+	if [ -z "$PUSHGATEWAY_URL" ]; then
+		echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
+	else
+		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}"
 # HELP backup_duration_seconds Time spent on creating backup
 # TYPE backup_duration_seconds gauge
 backup_duration_seconds{repository="${RESTIC_REPOSITORY}",data="${DATA}"} $((end - start))
@@ -56,36 +60,37 @@ EOF
 }
 
 check_db_vars() {
-    if [ -z "$MYSQL_PASSWORD" ]; then
-            echo "ERROR: MYSQL_PASSWORD is not set. Exiting"
-            exit 1
-    fi
-    if [ -z "$MYSQL_USER" ]; then
-            echo "ERROR: MYSQL_USER is not set. Exiting"
-            exit 1
-    fi
-    if [ -z "$MYSQL_HOST" ]; then
-            echo "ERROR: MYSQL_HOST is not set. Exiting"
-            exit 1
-    fi
+	if [ -z "$MYSQL_PASSWORD" ]; then
+		echo "ERROR: MYSQL_PASSWORD is not set. Exiting"
+		exit 1
+	fi
+	if [ -z "$MYSQL_USER" ]; then
+		echo "ERROR: MYSQL_USER is not set. Exiting"
+		exit 1
+	fi
+	if [ -z "$MYSQL_HOST" ]; then
+		echo "ERROR: MYSQL_HOST is not set. Exiting"
+		exit 1
+	fi
 }
 
 
 check_restic_vars() {
 	if [ -z "$RESTIC_REPOSITORY" ]; then
-	        echo "ERROR: RESTIC_REPOSITORY is not set. Exiting"
-	        exit 1
+		echo "ERROR: RESTIC_REPOSITORY is not set. Exiting"
+		exit 1
 	fi
 	if [ -z "$RESTIC_PASSWORD" ]; then
-	        echo "ERROR: RESTIC_PASSWORD is not set. Exiting"
-	        exit 1
+		echo "ERROR: RESTIC_PASSWORD is not set. Exiting"
+		exit 1
 	fi
 	if [ -z "$DATA_DIRECTORY" ] && [ -z "$MYSQL_DATABASE" ]; then
-	        echo "ERROR: Either DATA_DIRECTORY or MYSQL_DATABASE is not set. Exiting"
-	        exit 1
+		echo "ERROR: Either DATA_DIRECTORY or MYSQL_DATABASE is not set. Exiting"
+		exit 1
 	fi
 }
 
 echo "$(date +"%F %T") INFO: Start restic backup"
 check_restic_vars
+
 backup
