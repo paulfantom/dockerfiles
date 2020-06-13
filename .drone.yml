@@ -8,6 +8,7 @@ platform:
 steps:
 - name: restic-mysql
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -20,6 +21,7 @@ steps:
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -32,6 +34,7 @@ steps:
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -56,6 +59,7 @@ platform:
 steps:
 - name: restic-mysql
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -68,6 +72,7 @@ steps:
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -80,6 +85,7 @@ steps:
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -104,6 +110,7 @@ platform:
 steps:
 - name: restic-mysql
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -116,6 +123,7 @@ steps:
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -128,6 +136,7 @@ steps:
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
   image: plugins/docker
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -148,6 +157,7 @@ name: manifests
 steps:
 - name: restic-mysql
   image: plugins/manifest
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -161,6 +171,7 @@ steps:
       - linux/arm
 - name: rsync
   image: plugins/manifest
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -174,6 +185,7 @@ steps:
       - linux/arm
 - name: coredns-ads
   image: plugins/manifest
+  depends_on: [clone]
   settings:
     username:
       from_secret: QUAY_USERNAME
@@ -185,7 +197,6 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-
 
 depends_on:
   - amd64
