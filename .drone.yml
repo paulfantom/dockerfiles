@@ -30,6 +30,20 @@ steps:
     tags: latest-amd64
     context: rsync
     dockerfile: rsync/Dockerfile
+- name: coredns-ads
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/coredns-ads
+    tags: latest-amd64
+    context: coredns-ads
+    dockerfile: coredns-ads/Dockerfile
+    build_args:
+      - FILE=coredns-ads-linux-amd64
 
 ---
 kind: pipeline
@@ -64,6 +78,20 @@ steps:
     tags: latest-arm64
     context: rsync
     dockerfile: rsync/Dockerfile
+- name: coredns-ads
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/coredns-ads
+    tags: latest-arm64
+    context: coredns-ads
+    dockerfile: coredns-ads/Dockerfile
+    build_args:
+      - FILE=coredns-ads-arm64
 
 ---
 kind: pipeline
@@ -98,6 +126,20 @@ steps:
     tags: latest-arm
     context: rsync
     dockerfile: rsync/Dockerfile
+- name: coredns-ads
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/coredns-ads
+    tags: latest-arm
+    context: coredns-ads
+    dockerfile: coredns-ads/Dockerfile
+    build_args:
+      - FILE=coredns-ads-arm
 
 ---
 kind: pipeline
@@ -130,6 +172,20 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
+- name: coredns-ads
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/coredns-ads:latest
+    template: quay.io/paulfantom/coredns-ads:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+
 
 depends_on:
   - amd64
