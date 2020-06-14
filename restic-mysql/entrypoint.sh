@@ -16,12 +16,13 @@ set -euo pipefail
 
 backup() {
 	echo "$(date +"%F %T") INFO: Releasing all locks"
-	timeout $TIMEOUT restic unlock --remove-all -v
-	echo "$(date +"%F %T") INFO: checking repository state"
-	if ! timeout $TIMEOUT restic check ; then
+	if ! timeout $TIMEOUT restic unlock --remove-all -v; then
 		echo "$(date +"%F %T") INFO: creating new repository"
 		timeout $TIMEOUT restic init
 	fi
+
+	echo "$(date +"%F %T") INFO: checking repository state"
+	timeout $TIMEOUT restic check
 
 	echo "$(date +"%F %T") INFO: starting new backup"
 	start=$(date +%s)
