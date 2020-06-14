@@ -8,7 +8,9 @@ MYSQL_DATABASE=${MYSQL_DATABASE:-""}
 RESTIC_ARGS=${1:-""}
 
 PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
-INSTANCE=${INSTANCE:-"$(hostname)"}
+
+INSTANCE="${INSTANCE:-"$(hostname)"}"
+NAMESPACE="${NAMESPACE:-"$(hostname)"}"
 
 TIMEOUT="10m"
 
@@ -47,7 +49,7 @@ backup() {
 	if [ -z "$PUSHGATEWAY_URL" ]; then
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
 	else
-		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}" > /dev/null
+		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}/namespace/${NAMESPACE}" > /dev/null
 # HELP backup_last_start_timestamp Time whan backup started
 # TYPE backup_last_start_timestamp gauge
 backup_last_start_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${start}
