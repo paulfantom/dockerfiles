@@ -47,7 +47,7 @@ backup() {
 	if [ -z "$PUSHGATEWAY_URL" ]; then
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
 	else
-		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}"
+		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}" > /dev/null
 # HELP backup_duration_seconds Time spent on creating backup
 # TYPE backup_duration_seconds gauge
 backup_duration_seconds{repository="${RESTIC_REPOSITORY}",data="${DATA}"} $((end - start))
