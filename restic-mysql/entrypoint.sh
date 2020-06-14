@@ -50,12 +50,12 @@ backup() {
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
 	else
 		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}/namespace/${NAMESPACE}" > /dev/null
-# HELP backup_last_start_timestamp Time whan backup started
-# TYPE backup_last_start_timestamp gauge
-backup_last_start_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${start}
-# HELP backup_last_end_timestamp Time when backup ended
-# TYPE backup_last_end_timestamp gauge
-backup_last_end_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${end}
+# HELP backup_start_last_timestamp Time whan backup started
+# TYPE backup_start_last_timestamp gauge
+backup_start_last_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${start}
+# HELP backup_end_last_timestamp Time when backup ended
+# TYPE backup_end_last_timestamp gauge
+backup_end_last_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${end}
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
 backup_size_bytes{repository="${RESTIC_REPOSITORY}",data="${DATA}"} $(echo $STATS | jq .total_size)
