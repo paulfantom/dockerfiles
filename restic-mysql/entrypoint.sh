@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 RESTIC_REPOSITORY=${RESTIC_REPOSITORY:-""}
 RESTIC_PASSWORD=${RESTIC_PASSWORD:-""}
@@ -9,14 +9,16 @@ RESTIC_ARGS=${1:-""}
 
 PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
 
-INSTANCE="${INSTANCE:-"$(hostname)"}"
-NAMESPACE="${NAMESPACE:-"$(hostname)"}"
+INSTANCE="${INSTANCE:-""}"
+NAMESPACE="${NAMESPACE:-""}"
 
 TIMEOUT="10m"
 
 set -euo pipefail
 
 backup() {
+	local start end data stats snapshots group
+
 	echo "$(date +"%F %T") INFO: Releasing all locks"
 	if ! timeout $TIMEOUT restic unlock --remove-all -v; then
 		echo "$(date +"%F %T") INFO: creating new repository"
@@ -29,39 +31,59 @@ backup() {
 	echo "$(date +"%F %T") INFO: starting new backup"
 	start=$(date +%s)
 	if [ -n "$DATA_DIRECTORY" ]; then
-		restic backup ${RESTIC_ARGS} --host "${INSTANCE}" "${DATA_DIRECTORY}"
-		DATA="${DATA_DIRECTORY}"
+		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" "${DATA_DIRECTORY}"
+		data="${DATA_DIRECTORY}"
 	elif [ -n "${MYSQL_DATABASE}" ]; then
 		check_db_vars
-		mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE}" --stdin --stdin-filename "${MYSQL_DATABASE}_dump.sql"
-		DATA="${MYSQL_DATABASE}_dump.sql"
+		mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${MYSQL_DATABASE}_dump.sql"
+		data="${MYSQL_DATABASE}_dump.sql"
 	fi
 	end=$(date +%s)
 
+	# statistics
 	echo "$(date +"%F %T") INFO: Backup finished, exporting statistics"
-	STATS=$(restic stats --json)
-	echo "$STATS"
-	if [ "$STATS" = "" ]; then
+	stats=$(timeout $TIMEOUT restic stats --no-lock --json)
+	if [ "$stats" = "" ]; then
 		echo "$(date +"%F %T") ERROR: No backup statistics can be found. Exiting."
+		exit 1
+	fi
+
+	# snapshots
+	snapshots=$(timeout $TIMEOUT restic snapshots --no-lock --json | jq length)
+	if [ "$snapshots" = "" ]; then
+		echo "$(date +"%F %T") ERROR: No backup snapshots can be found. Exiting."
 		exit 1
 	fi
 
 	if [ -z "$PUSHGATEWAY_URL" ]; then
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics won't be sent"
 	else
-		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/backup/instance/${INSTANCE}/namespace/${NAMESPACE}" > /dev/null
+		group="job/backup"
+		if [ "${INSTANCE}" != "" ]; then
+			group="${group}/instance@base64/$(echo -n "${INSTANCE}" | base64)"
+		fi
+		if [ "${NAMESPACE}" != "" ]; then
+			group="${group}/namespace@base64/$(echo -n "${NAMESPACE}" | base64 )"
+		fi
+		group="${group}/repository@base64/$(echo -n "${RESTIC_REPOSITORY}" | base64 )"
+		group="${group}/data@base64/$(echo -n "${data}" | base64 )"
+
+		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" > /dev/null
 # HELP backup_start_last_timestamp Time whan backup started
-# TYPE backup_start_last_timestamp gauge
-backup_start_last_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${start}
+# TYPE backup_start_last_timestamp counter
+backup_start_last_timestamp ${start}
 # HELP backup_end_last_timestamp Time when backup ended
-# TYPE backup_end_last_timestamp gauge
-backup_end_last_timestamp{repository="${RESTIC_REPOSITORY}",data="${DATA}"} ${end}
+# TYPE backup_end_last_timestamp counter
+backup_end_last_timestamp ${end}
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
-backup_size_bytes{repository="${RESTIC_REPOSITORY}",data="${DATA}"} $(echo $STATS | jq .total_size)
+backup_size_bytes $(echo "$stats" | jq .total_size)
 # HELP backup_files_total Total number of backed up files
 # TYPE backup_files_total gauge
-backup_files_total{repository="${RESTIC_REPOSITORY}",data="${DATA}"} $(echo $STATS | jq .total_file_count)
+backup_files_total $(echo "$stats" | jq .total_file_count)
+# HELP backup_snapshots_total Total number of snapshots
+# TYPE backup_snapshots_total gauge
+backup_snapshots_total ${snapshots}
 EOF
 		echo "$(date +"%F %T") INFO: Statistics exported. All done."
 	fi
