@@ -26,7 +26,7 @@ backup() {
 	fi
 
 	echo "$(date +"%F %T") INFO: checking repository state"
-	timeout $TIMEOUT restic check
+	timeout 60m restic check
 
 	echo "$(date +"%F %T") INFO: starting new backup"
 	start=$(date +%s)
