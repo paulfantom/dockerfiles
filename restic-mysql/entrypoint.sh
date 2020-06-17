@@ -68,7 +68,7 @@ backup() {
 		group="${group}/repository@base64/$(echo -n "${RESTIC_REPOSITORY}" | base64 )"
 		group="${group}/data@base64/$(echo -n "${data}" | base64 )"
 
-		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" > /dev/null
+		cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" 2> /dev/null
 # HELP backup_start_last_timestamp Time whan backup started
 # TYPE backup_start_last_timestamp counter
 backup_start_last_timestamp ${start}
