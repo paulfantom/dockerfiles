@@ -78,12 +78,12 @@ backup() {
 	group="${group}/data@base64/$(echo -n "${data}" | base64 )"
 
 	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" 2> /dev/null
-# HELP backup_start_last_timestamp Time whan backup started
-# TYPE backup_start_last_timestamp counter
-backup_start_last_timestamp ${start}
-# HELP backup_end_last_timestamp Time when backup ended
-# TYPE backup_end_last_timestamp counter
-backup_end_last_timestamp ${end}
+# HELP backup_start_last_timestamp_seconds Time whan backup started
+# TYPE backup_start_last_timestamp_seconds counter
+backup_start_last_timestamp_seconds ${start}
+# HELP backup_end_last_timestamp_seconds Time when backup ended
+# TYPE backup_end_last_timestamp_seconds counter
+backup_end_last_timestamp_seconds ${end}
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
 backup_size_bytes $(echo "$stats" | jq .total_size)
