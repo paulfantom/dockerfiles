@@ -15,6 +15,7 @@ steps:
     password:
       from_secret: QUAY_PASSWORD
     registry: quay.io
+    # dry_run: "${DRONE_PULL_REQUEST=0}"
     repo: quay.io/paulfantom/restic-mysql
     tags: latest-amd64
     context: restic-mysql
@@ -75,10 +76,9 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=amd64
-when:
-  ref:
-    - refs/pull/**
-    - refs/heads/master
+trigger:
+  branch:
+    - master
 
 ---
 kind: pipeline
@@ -158,10 +158,9 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=arm64
-when:
-  ref:
-    - refs/pull/**
-    - refs/heads/master
+trigger:
+  branch:
+    - master
 
 ---
 kind: pipeline
@@ -241,10 +240,9 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=armv6
-when:
-  ref:
-    - refs/pull/**
-    - refs/heads/master
+trigger:
+  branch:
+    - master
 
 ---
 kind: pipeline
@@ -321,9 +319,11 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-when:
-  ref:
-    - refs/heads/master
+trigger:
+  branch:
+    - master
+  event:
+    - push
 
 depends_on:
   - amd64
