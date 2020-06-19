@@ -47,6 +47,38 @@ steps:
     dockerfile: coredns-ads/Dockerfile
     build_args:
       - FILE=coredns-ads-linux-amd64
+- name: ara
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ara
+    tags: latest-amd64
+    context: ara
+    dockerfile: ara/Dockerfile
+- name: oauth2-proxy
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/oauth2-proxy
+    tags: latest-amd64
+    context: oauth2-proxy
+    dockerfile: oauth2-proxy/Dockerfile
+    build_args:
+      - ARCH=amd64
+when:
+  ref:
+    - refs/pull/**
+    - refs/heads/master
 
 ---
 kind: pipeline
@@ -98,6 +130,38 @@ steps:
     dockerfile: coredns-ads/Dockerfile
     build_args:
       - FILE=coredns-ads-arm64
+- name: ara
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ara
+    tags: latest-arm64
+    context: ara
+    dockerfile: ara/Dockerfile
+- name: oauth2-proxy
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/oauth2-proxy
+    tags: latest-arm64
+    context: oauth2-proxy
+    dockerfile: oauth2-proxy/Dockerfile
+    build_args:
+      - ARCH=arm64
+when:
+  ref:
+    - refs/pull/**
+    - refs/heads/master
 
 ---
 kind: pipeline
@@ -149,6 +213,38 @@ steps:
     dockerfile: coredns-ads/Dockerfile
     build_args:
       - FILE=coredns-ads-arm
+- name: ara
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ara
+    tags: latest-arm
+    context: ara
+    dockerfile: ara/Dockerfile
+- name: oauth2-proxy
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/oauth2-proxy
+    tags: latest-arm
+    context: oauth2-proxy
+    dockerfile: oauth2-proxy/Dockerfile
+    build_args:
+      - ARCH=armv6
+when:
+  ref:
+    - refs/pull/**
+    - refs/heads/master
 
 ---
 kind: pipeline
@@ -197,6 +293,37 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
+- name: ara
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/ara:latest
+    template: quay.io/paulfantom/ara:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: oauth2-proxy
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/oauth2-proxy:latest
+    template: quay.io/paulfantom/oauth2-proxy:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+when:
+  ref:
+    - refs/heads/master
 
 depends_on:
   - amd64
