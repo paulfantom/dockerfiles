@@ -76,6 +76,20 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=amd64
+- name: ansible
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ansible
+    tags: latest-amd64
+    context: ansible
+    dockerfile: ansible/Dockerfile
+
 trigger:
   branch:
     - master
@@ -158,6 +172,20 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=arm64
+- name: ansible
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ansible
+    tags: latest-arm64
+    context: ansible
+    dockerfile: ansible/Dockerfile
+
 trigger:
   branch:
     - master
@@ -240,6 +268,20 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=armv6
+- name: ansible
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/ansible
+    tags: latest-arm
+    context: ansible
+    dockerfile: ansible/Dockerfile
+
 trigger:
   branch:
     - master
@@ -319,6 +361,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
+- name: ansible
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/ansible:latest
+    template: quay.io/paulfantom/ansible:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+
 trigger:
   branch:
     - master
