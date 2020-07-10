@@ -12,6 +12,8 @@ PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
 INSTANCE="${INSTANCE:-""}"
 NAMESPACE="${NAMESPACE:-""}"
 
+MAX_AGE="${MAX_AGE:-"691200"}"
+
 TIMEOUT="${TIMEOUT:-"60m"}"
 
 set -euo pipefail
@@ -22,8 +24,40 @@ timeout_handler() {
 	fi
 }
 
+
 backup() {
-	local start end data stats snapshots group
+	local data stats snapshots metrics_url
+
+	# Initialize variables
+	if [ -n "$DATA_DIRECTORY" ]; then
+		data="${DATA_DIRECTORY}"
+	elif [ -n "${MYSQL_DATABASE}" ]; then
+		data="${MYSQL_DATABASE}_dump.sql"
+	fi
+	metrics_url="${PUSHGATEWAY_URL}/metrics/job/backup"
+	if [ "${NAMESPACE}" != "" ]; then
+		metrics_url="${metrics_url}/tier@base64/$(echo -n "${NAMESPACE}" | base64 )"
+	elif [ "${INSTANCE}" != "" ]; then
+		metrics_url="${metrics_url}/tier@base64/$(echo -n "${INSTANCE}" | base64)"
+	fi
+	metrics_url="${metrics_url}/repository@base64/$(echo -n "${RESTIC_REPOSITORY}" | base64 )"
+	metrics_url="${metrics_url}/data@base64/$(echo -n "${data}" | base64 )"
+
+	# Send startup metrics
+	if [ -n "$PUSHGATEWAY_URL" ]; then
+		cat <<EOF | curl -iv --data-binary @- "${metrics_url}" 2> /dev/null
+# HELP backup_start_last_timestamp_seconds Time whan backup started
+# TYPE backup_start_last_timestamp_seconds gauge
+backup_start_last_timestamp_seconds $(date +%s)
+# HELP backup_max_age_seconds The SLO value for alerting, in seconds
+# TYPE backup_max_age_seconds gauge
+backup_max_age_seconds ${MAX_AGE}
+# HELP backup_success_timestamp_seconds Last successful backup job run
+# TYPE backup_success_timestamp_seconds gauge
+backup_success_timestamp_seconds 0
+EOF
+
+	fi
 
 	echo "INFO: Releasing all locks"
 	if ! timeout "$TIMEOUT" restic unlock --remove-all -v; then
@@ -35,16 +69,12 @@ backup() {
 	timeout "$TIMEOUT" restic check
 
 	echo "INFO: starting new backup"
-	start=$(date +%s)
 	if [ -n "$DATA_DIRECTORY" ]; then
-		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" "${DATA_DIRECTORY}"
-		data="${DATA_DIRECTORY}"
+		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" "${data}"
 	elif [ -n "${MYSQL_DATABASE}" ]; then
 		check_db_vars
-		mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${MYSQL_DATABASE}_dump.sql"
-		data="${MYSQL_DATABASE}_dump.sql"
+		mysqldump -h "$MYSQL_HOST" --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" | restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${data}"
 	fi
-	end=$(date +%s)
 
 	# statistics are not imporatant when not sent to monitoring
 	if [ -z "$PUSHGATEWAY_URL" ]; then
@@ -67,23 +97,10 @@ backup() {
 		exit 1
 	fi
 
-	group="job/backup"
-	if [ "${INSTANCE}" != "" ]; then
-		group="${group}/instance@base64/$(echo -n "${INSTANCE}" | base64)"
-	fi
-	if [ "${NAMESPACE}" != "" ]; then
-		group="${group}/namespace@base64/$(echo -n "${NAMESPACE}" | base64 )"
-	fi
-	group="${group}/repository@base64/$(echo -n "${RESTIC_REPOSITORY}" | base64 )"
-	group="${group}/data@base64/$(echo -n "${data}" | base64 )"
-
-	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" 2> /dev/null
-# HELP backup_start_last_timestamp_seconds Time whan backup started
-# TYPE backup_start_last_timestamp_seconds gauge
-backup_start_last_timestamp_seconds ${start}
-# HELP backup_end_last_timestamp_seconds Time when backup ended
-# TYPE backup_end_last_timestamp_seconds gauge
-backup_end_last_timestamp_seconds ${end}
+	cat <<EOF | curl -iv --data-binary @- "${metrics_url}" 2> /dev/null
+# HELP backup_success_timestamp_seconds Last successful backup job run
+# TYPE backup_success_timestamp_seconds gauge
+backup_success_timestamp_seconds $(date +%s)
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
 backup_size_bytes $(echo "$stats" | jq .total_size)
