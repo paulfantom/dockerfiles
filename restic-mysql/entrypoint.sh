@@ -79,10 +79,10 @@ backup() {
 
 	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/${group}" 2> /dev/null
 # HELP backup_start_last_timestamp_seconds Time whan backup started
-# TYPE backup_start_last_timestamp_seconds counter
+# TYPE backup_start_last_timestamp_seconds gauge
 backup_start_last_timestamp_seconds ${start}
 # HELP backup_end_last_timestamp_seconds Time when backup ended
-# TYPE backup_end_last_timestamp_seconds counter
+# TYPE backup_end_last_timestamp_seconds gauge
 backup_end_last_timestamp_seconds ${end}
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
