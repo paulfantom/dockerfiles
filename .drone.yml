@@ -89,6 +89,20 @@ steps:
     tags: latest-amd64
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: configmapsecrets
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/configmapsecrets-controller
+    tags: latest-amd64
+    context: configmapsecrets
+    dockerfile: configmapsecrets/Dockerfile
+
 
 trigger:
   branch:
@@ -185,6 +199,20 @@ steps:
     tags: latest-arm64
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: configmapsecrets
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/configmapsecrets-controller
+    tags: latest-arm64
+    context: configmapsecrets
+    dockerfile: configmapsecrets/Dockerfile
+
 
 trigger:
   branch:
@@ -281,6 +309,20 @@ steps:
     tags: latest-arm
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: configmapsecrets
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/configmapsecrets-controller
+    tags: latest-arm
+    context: configmapsecrets
+    dockerfile: configmapsecrets/Dockerfile
+
 
 trigger:
   branch:
@@ -375,6 +417,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
+- name: configmapsecrets
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/configmapsecrets-controller:latest
+    template: quay.io/paulfantom/configmapsecrets-controller:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+
 
 trigger:
   branch:
