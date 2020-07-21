@@ -89,6 +89,19 @@ steps:
     tags: latest-amd64
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: nginx-exporter
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/nginx-exporter
+    tags: latest-amd64
+    context: nginx-exporter
+    dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
   image: plugins/docker
   depends_on: [clone]
@@ -102,7 +115,6 @@ steps:
     tags: latest-amd64
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
-
 
 trigger:
   branch:
@@ -199,6 +211,19 @@ steps:
     tags: latest-arm64
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: nginx-exporter
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/nginx-exporter
+    tags: latest-arm64
+    context: nginx-exporter
+    dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
   image: plugins/docker
   depends_on: [clone]
@@ -212,7 +237,6 @@ steps:
     tags: latest-arm64
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
-
 
 trigger:
   branch:
@@ -309,6 +333,19 @@ steps:
     tags: latest-arm
     context: ansible
     dockerfile: ansible/Dockerfile
+- name: nginx-exporter
+  image: plugins/docker
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    registry: quay.io
+    repo: quay.io/paulfantom/nginx-exporter
+    tags: latest-arm
+    context: nginx-exporter
+    dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
   image: plugins/docker
   depends_on: [clone]
@@ -322,7 +359,6 @@ steps:
     tags: latest-arm
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
-
 
 trigger:
   branch:
@@ -413,6 +449,20 @@ steps:
       from_secret: QUAY_PASSWORD
     target: quay.io/paulfantom/ansible:latest
     template: quay.io/paulfantom/ansible:latest-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: nginx-exporter
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/nginx-exporter:latest
+    template: quay.io/paulfantom/nginx-exporter:latest-ARCH
     platforms:
       - linux/amd64
       - linux/arm64
