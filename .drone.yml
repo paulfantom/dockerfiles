@@ -76,7 +76,7 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=amd64
-- name: ansible
+- name: ansible-deploy
   image: plugins/docker
   depends_on: [clone]
   settings:
@@ -85,10 +85,10 @@ steps:
     password:
       from_secret: QUAY_PASSWORD
     registry: quay.io
-    repo: quay.io/paulfantom/ansible
+    repo: quay.io/paulfantom/ansible-deploy
     tags: latest-amd64
-    context: ansible
-    dockerfile: ansible/Dockerfile
+    context: ansible-deploy
+    dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
   image: plugins/docker
   depends_on: [clone]
@@ -198,7 +198,7 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=arm64
-- name: ansible
+- name: ansible-deploy
   image: plugins/docker
   depends_on: [clone]
   settings:
@@ -207,10 +207,10 @@ steps:
     password:
       from_secret: QUAY_PASSWORD
     registry: quay.io
-    repo: quay.io/paulfantom/ansible
+    repo: quay.io/paulfantom/ansible-deploy
     tags: latest-arm64
-    context: ansible
-    dockerfile: ansible/Dockerfile
+    context: ansible-deploy
+    dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
   image: plugins/docker
   depends_on: [clone]
@@ -320,7 +320,7 @@ steps:
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
       - ARCH=armv6
-- name: ansible
+- name: ansible-deploy
   image: plugins/docker
   depends_on: [clone]
   settings:
@@ -329,10 +329,10 @@ steps:
     password:
       from_secret: QUAY_PASSWORD
     registry: quay.io
-    repo: quay.io/paulfantom/ansible
+    repo: quay.io/paulfantom/ansible-deploy
     tags: latest-arm
-    context: ansible
-    dockerfile: ansible/Dockerfile
+    context: ansible-deploy
+    dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
   image: plugins/docker
   depends_on: [clone]
@@ -439,7 +439,7 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: ansible
+- name: ansible-deploy
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -447,8 +447,8 @@ steps:
       from_secret: QUAY_USERNAME
     password:
       from_secret: QUAY_PASSWORD
-    target: quay.io/paulfantom/ansible:latest
-    template: quay.io/paulfantom/ansible:latest-ARCH
+    target: quay.io/paulfantom/ansible-deploy:latest
+    template: quay.io/paulfantom/ansible-deploy:latest-ARCH
     platforms:
       - linux/amd64
       - linux/arm64
