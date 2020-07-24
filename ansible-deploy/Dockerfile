@@ -7,11 +7,13 @@ RUN apt update && apt install --no-install-recommends -y \
         sshpass \
         openssh-client \
         git && \
+    rm -rf /var/lib/apt/lists/* && \
     pip3 install \
         ansible>=2.9.9 \
         mitogen \
         ansible-lint \
         ara
+
 
 RUN mkdir /ansible && \
     mkdir -p /etc/ansible && \
