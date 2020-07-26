@@ -14,15 +14,15 @@ metrics_start() {
 		return
 	fi
 	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/deploy"
-# HELP job_start_timestamp_seconds Time whan deployment started
-# TYPE job_start_timestamp_seconds counter
+# HELP job_start_timestamp_seconds Time when job started
+# TYPE job_start_timestamp_seconds gauge
 job_start_timestamp_seconds $(date +%s)
-# HELP job_success_timestamp_seconds Time when job started
-# TYPE job_success_timestamp_seconds gauge
-job_success_timestamp_seconds 0
 # HELP job_max_age_seconds The SLO value for alerting, in seconds
 # TYPE job_max_age_seconds gauge
 job_max_age_seconds ${MAX_AGE}
+# HELP job_success_timestamp_seconds Time when job started
+# TYPE job_success_timestamp_seconds gauge
+job_success_timestamp_seconds 0
 EOF
 	echo "INFO: Startup statistics exported."
 }
@@ -32,6 +32,7 @@ metrics_success() {
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics not sent"
 	fi
 	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/deploy"
+# HELP job_success_timestamp_seconds Time when job started
 # TYPE job_success_timestamp_seconds gauge
 job_success_timestamp_seconds $(date +%s)
 EOF

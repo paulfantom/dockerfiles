@@ -24,7 +24,6 @@ timeout_handler() {
 	fi
 }
 
-
 backup() {
 	local data stats snapshots metrics_url
 
@@ -46,15 +45,15 @@ backup() {
 	# Send startup metrics
 	if [ -n "$PUSHGATEWAY_URL" ]; then
 		cat <<EOF | curl -iv --data-binary @- "${metrics_url}" 2> /dev/null
-# HELP backup_start_last_timestamp_seconds Time whan backup started
-# TYPE backup_start_last_timestamp_seconds gauge
-backup_start_last_timestamp_seconds $(date +%s)
-# HELP backup_max_age_seconds The SLO value for alerting, in seconds
-# TYPE backup_max_age_seconds gauge
-backup_max_age_seconds ${MAX_AGE}
-# HELP backup_success_timestamp_seconds Last successful backup job run
-# TYPE backup_success_timestamp_seconds gauge
-backup_success_timestamp_seconds 0
+# HELP job_start_timestamp_seconds Time when job started
+# TYPE job_start_timestamp_seconds gauge
+job_start_timestamp_seconds $(date +%s)
+# HELP job_max_age_seconds The SLO value for alerting, in seconds
+# TYPE job_max_age_seconds gauge
+job_max_age_seconds ${MAX_AGE}
+# HELP job_success_timestamp_seconds Time when job started
+# TYPE job_success_timestamp_seconds gauge
+job_success_timestamp_seconds 0
 EOF
 
 	fi
@@ -98,9 +97,9 @@ EOF
 	fi
 
 	cat <<EOF | curl -iv --data-binary @- "${metrics_url}" 2> /dev/null
-# HELP backup_success_timestamp_seconds Last successful backup job run
-# TYPE backup_success_timestamp_seconds gauge
-backup_success_timestamp_seconds $(date +%s)
+# HELP job_success_timestamp_seconds Time when job started
+# TYPE job_success_timestamp_seconds gauge
+job_success_timestamp_seconds $(date +%s)
 # HELP backup_size_bytes Backup size
 # TYPE backup_size_bytes gauge
 backup_size_bytes $(echo "$stats" | jq .total_size)
