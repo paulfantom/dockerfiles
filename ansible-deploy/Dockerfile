@@ -1,19 +1,30 @@
-FROM python:3
+FROM alpine
 
-RUN apt update && apt install --no-install-recommends -y \
+RUN apk update && apk add --no-cache \
+	bash \
+	curl \
 	sudo \
 	openssl \
         ca-certificates \
         sshpass \
         openssh-client \
-        git && \
-    rm -rf /var/lib/apt/lists/* && \
+        git \
+        python3
+
+RUN apk add --no-cache --virtual build-dependencies \
+        build-base \
+        gcc \
+        libffi-dev \
+        openssl-dev \
+        python3-dev \
+        py3-pip \
+        wget && \
     pip3 install \
         ansible>=2.9.9 \
         mitogen \
         ansible-lint \
-        ara
-
+        ara && \
+    apk del build-dependencies
 
 RUN mkdir /ansible && \
     mkdir -p /etc/ansible && \
