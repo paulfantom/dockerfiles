@@ -23,7 +23,8 @@ RUN apk add --no-cache --virtual build-dependencies \
         ansible>=2.9.9 \
         mitogen \
         ansible-lint \
-        ara && \
+        ara \
+        requests && \
     apk del build-dependencies
 
 RUN mkdir /ansible && \
