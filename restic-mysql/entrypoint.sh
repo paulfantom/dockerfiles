@@ -9,10 +9,12 @@ RESTIC_ARGS=${1:-""}
 
 PUSHGATEWAY_URL="${PUSHGATEWAY_URL:-""}"
 
+MAX_AGE="${MAX_AGE:-"691200"}"
+
+# Configurable labels
 INSTANCE="${INSTANCE:-""}"
 NAMESPACE="${NAMESPACE:-""}"
-
-MAX_AGE="${MAX_AGE:-"691200"}"
+TIER="${TIER:-""}"
 
 TIMEOUT="${TIMEOUT:-"60m"}"
 
@@ -35,9 +37,13 @@ backup() {
 	fi
 	metrics_url="${PUSHGATEWAY_URL}/metrics/job/backup"
 	if [ "${NAMESPACE}" != "" ]; then
-		metrics_url="${metrics_url}/tier@base64/$(echo -n "${NAMESPACE}" | base64 )"
-	elif [ "${INSTANCE}" != "" ]; then
-		metrics_url="${metrics_url}/tier@base64/$(echo -n "${INSTANCE}" | base64)"
+		metrics_url="${metrics_url}/namespace@base64/$(echo -n "${NAMESPACE}" | base64 )"
+	fi
+	if [ "${INSTANCE}" != "" ]; then
+		metrics_url="${metrics_url}/instance@base64/$(echo -n "${INSTANCE}" | base64)"
+	fi
+	if [ "${TIER}" != "" ]; then
+		metrics_url="${metrics_url}/tier@base64/$(echo -n "${TIER}" | base64)"
 	fi
 	metrics_url="${metrics_url}/repository@base64/$(echo -n "${RESTIC_REPOSITORY}" | base64 )"
 	metrics_url="${metrics_url}/data@base64/$(echo -n "${data}" | base64 )"

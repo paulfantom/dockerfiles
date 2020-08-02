@@ -8,12 +8,28 @@ REPO_URL="${REPO_URL:-""}"
 REPO_DIR="${REPO_DIR:-"/ansible"}"
 MAX_AGE="${MAX_AGE:-"$(( 12*60*60 ))"}"
 
+NAMESPACE="${NAMESPACE:-""}"
+INSTANCE="${INSTANCE:-""}"
+TIER="${TIER:-""}"
+METRICS_URL=""
+
 metrics_start() {
 	if [ -z "$PUSHGATEWAY_URL" ]; then
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics not sent"
 		return
 	fi
-	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/deploy"
+	METRICS_URL="${PUSHGATEWAY_URL}/metrics/job/deploy"
+	if [ "${NAMESPACE}" != "" ]; then
+		METRICS_URL="${METRICS_URL}/namespace@base64/$(echo -n "${NAMESPACE}" | base64 )"
+	fi
+	if [ "${INSTANCE}" != "" ]; then
+		METRICS_URL="${METRICS_URL}/instance@base64/$(echo -n "${INSTANCE}" | base64 )"
+	fi
+	if [ "${TIER}" != "" ]; then
+		METRICS_URL="${METRICS_URL}/tier@base64/$(echo -n "${TIER}" | base64)"
+	fi
+
+	cat <<EOF | curl --data-binary @- "${METRICS_URL}"
 # HELP job_start_timestamp_seconds Time when job started
 # TYPE job_start_timestamp_seconds gauge
 job_start_timestamp_seconds $(date +%s)
@@ -31,7 +47,7 @@ metrics_success() {
 	if [ -z "$PUSHGATEWAY_URL" ]; then
 		echo "INFO: PUSHGATEWAY_URL not defined, metrics not sent"
 	fi
-	cat <<EOF | curl --data-binary @- "${PUSHGATEWAY_URL}/metrics/job/deploy"
+	cat <<EOF | curl --data-binary @- "${METRICS_URL}"
 # HELP job_success_timestamp_seconds Time when job started
 # TYPE job_success_timestamp_seconds gauge
 job_success_timestamp_seconds $(date +%s)
