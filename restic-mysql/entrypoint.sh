@@ -78,7 +78,7 @@ EOF
 		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" "${data}"
 	elif [ -n "${MYSQL_DATABASE}" ]; then
 		check_db_vars
-		mysqldump -h "$MYSQL_HOST" --quick --compress --single-transaction -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" > /tmp/database.raw 
+		mysqldump -h "$MYSQL_HOST" --quick --compress --single-transaction --debug-info --max_allowed_packet=128MB -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" > /tmp/database.raw 
 		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${data}" < /tmp/database.raw
 	fi
 
