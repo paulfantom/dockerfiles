@@ -80,6 +80,8 @@ update_hosts() {
 		echo "WARN: Couldn't contact ARA server. Ansible run won't be recorded."
 	fi
 	echo "INFO: Updating services"
+
+	# export ANSIBLE_STRATEGY=mitogen_linear
 	
 	cd "${REPO_DIR}/${PLAYBOOK_DIR}"
 	ansible-galaxy install --force -r roles/requirements.yml
