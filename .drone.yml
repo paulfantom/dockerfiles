@@ -15,9 +15,10 @@ steps:
     password:
       from_secret: QUAY_PASSWORD
     registry: quay.io
-    # dry_run: "${DRONE_PULL_REQUEST=0}"
     repo: quay.io/paulfantom/restic-mysql
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64 
     context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
@@ -30,7 +31,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: rsync
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
@@ -43,7 +46,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/coredns-ads
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: coredns-ads
     dockerfile: coredns-ads/Dockerfile
     build_args:
@@ -58,7 +63,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ara
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: ara
     dockerfile: ara/Dockerfile
 - name: oauth2-proxy
@@ -71,7 +78,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/oauth2-proxy
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: oauth2-proxy
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
@@ -86,7 +95,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ansible-deploy
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: ansible-deploy
     dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
@@ -99,7 +110,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/nginx-exporter
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: nginx-exporter
     dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
@@ -112,7 +125,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/configmapsecrets-controller
-    tags: latest-amd64
+    tags:
+    - latest-amd64
+    - ${DRONE_COMMIT_SHA:0:8}-amd64
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
 
@@ -139,7 +154,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
@@ -152,7 +169,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: rsync
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
@@ -165,7 +184,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/coredns-ads
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: coredns-ads
     dockerfile: coredns-ads/Dockerfile
     build_args:
@@ -180,7 +201,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ara
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: ara
     dockerfile: ara/Dockerfile
 - name: oauth2-proxy
@@ -193,7 +216,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/oauth2-proxy
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: oauth2-proxy
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
@@ -208,7 +233,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ansible-deploy
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: ansible-deploy
     dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
@@ -221,7 +248,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/nginx-exporter
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: nginx-exporter
     dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
@@ -234,7 +263,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/configmapsecrets-controller
-    tags: latest-arm64
+    tags:
+    - latest-arm64
+    - ${DRONE_COMMIT_SHA:0:8}-arm64
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
 
@@ -261,7 +292,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/restic-mysql
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: restic-mysql
     dockerfile: restic-mysql/Dockerfile
 - name: rsync
@@ -274,7 +307,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/rsync
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: rsync
     dockerfile: rsync/Dockerfile
 - name: coredns-ads
@@ -287,7 +322,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/coredns-ads
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: coredns-ads
     dockerfile: coredns-ads/Dockerfile
     build_args:
@@ -302,7 +339,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ara
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: ara
     dockerfile: ara/Dockerfile
 - name: oauth2-proxy
@@ -315,7 +354,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/oauth2-proxy
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: oauth2-proxy
     dockerfile: oauth2-proxy/Dockerfile
     build_args:
@@ -330,7 +371,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/ansible-deploy
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: ansible-deploy
     dockerfile: ansible-deploy/Dockerfile
 - name: nginx-exporter
@@ -343,7 +386,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/nginx-exporter
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: nginx-exporter
     dockerfile: nginx-exporter/Dockerfile
 - name: configmapsecrets
@@ -356,7 +401,9 @@ steps:
       from_secret: QUAY_PASSWORD
     registry: quay.io
     repo: quay.io/paulfantom/configmapsecrets-controller
-    tags: latest-arm
+    tags:
+    - latest-arm
+    - ${DRONE_COMMIT_SHA:0:8}-arm
     context: configmapsecrets
     dockerfile: configmapsecrets/Dockerfile
 
@@ -369,7 +416,7 @@ kind: pipeline
 name: manifests
 
 steps:
-- name: restic-mysql
+- name: restic-mysql-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -383,7 +430,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: rsync
+- name: restic-mysql-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/restic-mysql:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/restic-mysql:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: rsync-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -397,7 +458,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: coredns-ads
+- name: rsync-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/rsync:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/rsync:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: coredns-ads-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -411,7 +486,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: ara
+- name: coredns-ads-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/coredns-ads:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/coredns-ads:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: ara-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -425,7 +514,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: oauth2-proxy
+- name: ara-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/ara:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/ara:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: oauth2-proxy-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -439,7 +542,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: ansible-deploy
+- name: oauth2-proxy-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/oauth2-proxy:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/oauth2-proxy:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: ansible-deploy-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -453,7 +570,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: nginx-exporter
+- name: ansible-deploy-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/ansible-deploy:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/ansible-deploy:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: nginx-exporter-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -467,7 +598,21 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-- name: configmapsecrets
+- name: nginx-exporter-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/nginx-exporter:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/nginx-exporter:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+- name: configmapsecrets-latest
   image: plugins/manifest
   depends_on: [clone]
   settings:
@@ -481,7 +626,20 @@ steps:
       - linux/amd64
       - linux/arm64
       - linux/arm
-
+- name: configmapsecrets-commit
+  image: plugins/manifest
+  depends_on: [clone]
+  settings:
+    username:
+      from_secret: QUAY_USERNAME
+    password:
+      from_secret: QUAY_PASSWORD
+    target: quay.io/paulfantom/configmapsecrets-controller:${DRONE_COMMIT_SHA:0:8}
+    template: quay.io/paulfantom/configmapsecrets-controller:${DRONE_COMMIT_SHA:0:8}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
 
 trigger:
   branch:
