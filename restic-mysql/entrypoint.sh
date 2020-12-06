@@ -71,7 +71,10 @@ EOF
 	fi
 
 	echo "INFO: checking repository state"
-	timeout "$TIMEOUT" restic check
+	timeout "$TIMEOUT" restic check || echo "ERROR: check operation took too long and was aborted. Backup continues."
+
+	echo "INFO: pruning unneeded data"
+	timeout "$TIMEOUT" restic prune || echo "ERROR: prune operation took too long and was aborted. Backup continues."
 
 	echo "INFO: starting new backup"
 	if [ -n "$DATA_DIRECTORY" ]; then
