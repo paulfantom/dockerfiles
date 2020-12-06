@@ -1,5 +1,7 @@
 # Container image name consists of QUAY_USERNAME and workflow name.
-name: 'restic-mysql'
+
+# Note: This is amd64-only
+name: 'plex_exporter'
 
 on:
   push:
@@ -28,7 +30,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
         with:
-          platforms: amd64,arm64,arm
+          platforms: amd64
 
       - name: Set up Docker Buildx
         id: buildx
@@ -48,6 +50,6 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: ${{ steps.prep.outputs.file_context }}
           file: ${{ steps.prep.outputs.file_context }}/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
