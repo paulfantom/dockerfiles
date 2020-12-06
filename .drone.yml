@@ -6,21 +6,6 @@ platform:
   arch: amd64
 
 steps:
-- name: restic-mysql
-  image: plugins/docker
-  depends_on: [clone]
-  settings:
-    username:
-      from_secret: QUAY_USERNAME
-    password:
-      from_secret: QUAY_PASSWORD
-    registry: quay.io
-    repo: quay.io/paulfantom/restic-mysql
-    tags:
-    - latest-amd64
-    - ${DRONE_COMMIT_SHA:0:8}-amd64 
-    context: restic-mysql
-    dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
   depends_on: [clone]
@@ -144,21 +129,6 @@ platform:
   arch: arm64
 
 steps:
-- name: restic-mysql
-  image: plugins/docker
-  depends_on: [clone]
-  settings:
-    username:
-      from_secret: QUAY_USERNAME
-    password:
-      from_secret: QUAY_PASSWORD
-    registry: quay.io
-    repo: quay.io/paulfantom/restic-mysql
-    tags:
-    - latest-arm64
-    - ${DRONE_COMMIT_SHA:0:8}-arm64
-    context: restic-mysql
-    dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
   depends_on: [clone]
@@ -282,21 +252,6 @@ platform:
   arch: arm
 
 steps:
-- name: restic-mysql
-  image: plugins/docker
-  depends_on: [clone]
-  settings:
-    username:
-      from_secret: QUAY_USERNAME
-    password:
-      from_secret: QUAY_PASSWORD
-    registry: quay.io
-    repo: quay.io/paulfantom/restic-mysql
-    tags:
-    - latest-arm
-    - ${DRONE_COMMIT_SHA:0:8}-arm
-    context: restic-mysql
-    dockerfile: restic-mysql/Dockerfile
 - name: rsync
   image: plugins/docker
   depends_on: [clone]
@@ -416,34 +371,6 @@ kind: pipeline
 name: manifests
 
 steps:
-- name: restic-mysql-latest
-  image: plugins/manifest
-  depends_on: [clone]
-  settings:
-    username:
-      from_secret: QUAY_USERNAME
-    password:
-      from_secret: QUAY_PASSWORD
-    target: quay.io/paulfantom/restic-mysql:latest
-    template: quay.io/paulfantom/restic-mysql:latest-ARCH
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      - linux/arm
-- name: restic-mysql-commit
-  image: plugins/manifest
-  depends_on: [clone]
-  settings:
-    username:
-      from_secret: QUAY_USERNAME
-    password:
-      from_secret: QUAY_PASSWORD
-    target: quay.io/paulfantom/restic-mysql:${DRONE_COMMIT_SHA:0:8}
-    template: quay.io/paulfantom/restic-mysql:${DRONE_COMMIT_SHA:0:8}-ARCH
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      - linux/arm
 - name: rsync-latest
   image: plugins/manifest
   depends_on: [clone]
