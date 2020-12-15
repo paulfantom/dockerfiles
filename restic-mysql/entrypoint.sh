@@ -27,7 +27,9 @@ timeout_handler() {
 }
 
 backup() {
-	local data stats snapshots metrics_url
+	local data stats snapshots metrics_url check_status prune_status
+	check_failed=0
+	prune_failed=0
 
 	# Initialize variables
 	if [ -n "$DATA_DIRECTORY" ]; then
@@ -66,15 +68,16 @@ EOF
 
 	echo "INFO: Releasing all locks"
 	if ! timeout "$TIMEOUT" restic unlock --remove-all -v; then
-		echo "$(date +"%F %T") INFO: creating new repository"
+		echo "INFO: creating new repository"
 		timeout "$TIMEOUT" restic init
 	fi
 
 	echo "INFO: checking repository state"
-	timeout "$TIMEOUT" restic check || echo "ERROR: check operation took too long and was aborted. Backup continues."
-
-	echo "INFO: pruning unneeded data"
-	timeout "$TIMEOUT" restic prune || echo "ERROR: prune operation took too long and was aborted. Backup continues."
+	if ! timeout "$TIMEOUT" restic check; then
+		echo "ERROR: check operation took too long and was aborted. Backup continues."
+		check_failed=1
+		timeout "$TIMEOUT" restic unlock --remove-all -v
+	fi
 
 	echo "INFO: starting new backup"
 	if [ -n "$DATA_DIRECTORY" ]; then
@@ -83,6 +86,13 @@ EOF
 		check_db_vars
 		mysqldump -h "$MYSQL_HOST" --quick --compress --single-transaction --debug-info --max_allowed_packet=128MB -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" > /tmp/database.raw 
 		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${data}" < /tmp/database.raw
+	fi
+
+	echo "INFO: pruning unneeded data"
+	if ! timeout "$TIMEOUT" restic prune; then
+		echo "ERROR: prune operation took too long and was aborted. Backup continues."
+		prune_failed=1
+		timeout "$TIMEOUT" restic unlock --remove-all -v
 	fi
 
 	# statistics are not imporatant when not sent to monitoring
@@ -119,6 +129,12 @@ backup_files_total $(echo "$stats" | jq .total_file_count)
 # HELP backup_snapshots_total Total number of snapshots
 # TYPE backup_snapshots_total gauge
 backup_snapshots_total ${snapshots}
+# HELP backup_prune_failed Restic prune failure
+# TYPE backup_prune_failed gauge
+backup_prune_failed ${prune_failed}
+# HELP backup_check_failed Restic check failure
+# TYPE backup_check_failed gauge
+backup_check_failed ${check_failed}
 EOF
 	echo "INFO: Statistics exported. All done."
 }
