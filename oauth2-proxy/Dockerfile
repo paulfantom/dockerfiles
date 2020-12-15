@@ -4,7 +4,7 @@ ENV VERSION=6.1.1
 # Copy sources
 WORKDIR $GOPATH/src/github.com/oauth2-proxy/oauth2-proxy
 
-# Now pull in our code
+# Chekcout code
 RUN git clone --branch v${VERSION} https://github.com/oauth2-proxy/oauth2-proxy.git .
 
 # Build binary and make sure there is at least an empty key file.

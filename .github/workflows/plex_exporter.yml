@@ -12,33 +12,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - uses: jitterbit/get-changed-files@v1
+        id: files
+        with:
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
       - name: Prepare
-        if: steps.prep.outputs.modified != 0
         id: prep
         run: |
           CONTEXT=$(basename "${GITHUB_WORKFLOW}" .yml)
           CONTAINER_IMAGE=quay.io/${{ secrets.QUAY_USERNAME }}/${CONTEXT}
           SHORTREF=${GITHUB_SHA::8}
           TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF}"
+          MODIFIED="false"
+          for file in ${{ steps.files.outputs.all }}; do
+              if [[ "$file" =~ ^${CONTEXT}/ ]]; then
+                  MODIFIED="true"
+                  break
+              fi
+          done
 
           # Set output parameters.
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=docker_image::${CONTAINER_IMAGE}
           echo ::set-output name=file_context::${CONTEXT}
+          echo ::set-output name=modified::${MODIFIED}
 
       - name: Set up QEMU
-        if: steps.prep.outputs.modified != 0
+        if: steps.prep.outputs.modified == 'true'
         uses: docker/setup-qemu-action@master
         with:
           platforms: amd64
 
       - name: Set up Docker Buildx
-        if: steps.prep.outputs.modified != 0
+        if: steps.prep.outputs.modified == 'true'
         id: buildx
         uses: docker/setup-buildx-action@master
 
       - name: Login to registry
-        if: github.event_name != 'pull_request' && steps.prep.outputs.modified != 0
+        if: github.event_name != 'pull_request' && steps.prep.outputs.modified == 'true'
         uses: docker/login-action@v1
         with:
           registry: quay.io
@@ -46,7 +60,7 @@ jobs:
           password: ${{ secrets.QUAY_PASSWORD }}
 
       - name: Build
-        if: steps.prep.outputs.modified != 0
+        if: steps.prep.outputs.modified == 'true'
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
