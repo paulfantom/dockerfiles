@@ -13,6 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Check files modified in last commit
+        run: |
+          MODIFIED=$(git diff --name-only --diff-filter=ADMR @~..@ | grep "^${GITHUB_WORKFLOW}/" | wc -l)
+          echo ::set-output name=modified::${MODIFIED}
+
       - name: Prepare
         id: prep
         run: |
@@ -24,18 +29,21 @@ jobs:
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=docker_image::${CONTAINER_IMAGE}
           echo ::set-output name=file_context::${GITHUB_WORKFLOW}
+        if: modified != 0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
         with:
           platforms: amd64,arm64,arm
+        if: modified != 0
 
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@master
+        if: modified != 0
 
       - name: Login to registry
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && modified != 0
         uses: docker/login-action@v1
         with:
           registry: quay.io
@@ -51,3 +59,4 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
           tags: ${{ steps.prep.outputs.tags }}
+        if: modified != 0
