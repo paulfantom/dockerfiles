@@ -1,12 +1,12 @@
 FROM golang:1.15-buster AS builder
 
-RUN export VERSION="$(cat VERSION)"
+COPY VERSION /tmp/VERSION
 
 # Copy sources
 WORKDIR /go/src/github.com/oauth2-proxy/oauth2-proxy
 
 # Chekcout code
-RUN git clone --branch v${VERSION} https://github.com/oauth2-proxy/oauth2-proxy.git .
+RUN git clone --branch v$(cat /tmp/VERSION) https://github.com/oauth2-proxy/oauth2-proxy.git .
 
 # Build binary and make sure there is at least an empty key file.
 #  This is useful for GCP App Engine custom runtime builds, because
@@ -14,7 +14,7 @@ RUN git clone --branch v${VERSION} https://github.com/oauth2-proxy/oauth2-proxy.
 #  build the key into the container and then tell it where it is
 #  by setting OAUTH2_PROXY_JWT_KEY_FILE=/etc/ssl/private/jwt_signing_key.pem
 #  in app.yaml instead.
-RUN VERSION=${VERSION} make build && touch jwt_signing_key.pem
+RUN VERSION=$(cat /tmp/VERSION) make build && touch jwt_signing_key.pem
 
 # Copy binary to alpine
 FROM alpine:3.12

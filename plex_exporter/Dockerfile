@@ -1,8 +1,8 @@
 FROM debian as builder
 
-RUN export VERSION="$(cat VERSION)"
+COPY VERSION /tmp/VERSION
 
-ADD "https://github.com/arnarg/plex_exporter/releases/download/v${VERSION}/plex_exporter_${VERSION}_linux_amd64" /tmp/plex_exporter
+RUN wget "https://github.com/arnarg/plex_exporter/releases/download/v$(cat /tmp/VERSION)/plex_exporter_$(cat /tmp/VERSION)_linux_amd64" -O /tmp/plex_exporter
 RUN chmod +x /tmp/plex_exporter
 
 FROM gcr.io/distroless/static
