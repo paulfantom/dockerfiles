@@ -9,7 +9,7 @@ COPY download.sh /tmp/download.sh
 
 USER root
 WORKDIR /
-RUN chmox +x /tmp/download.sh && /tmp/download.sh
+RUN chmod +x /tmp/download.sh && /tmp/download.sh
 
 FROM gcr.io/distroless/static
 
