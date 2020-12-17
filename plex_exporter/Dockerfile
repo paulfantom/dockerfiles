@@ -1,6 +1,6 @@
 FROM debian as builder
 
-ENV VERSION 0.2.2
+RUN export VERSION="$(cat VERSION)"
 
 ADD "https://github.com/arnarg/plex_exporter/releases/download/v${VERSION}/plex_exporter_${VERSION}_linux_amd64" /tmp/plex_exporter
 RUN chmod +x /tmp/plex_exporter

@@ -1,5 +1,6 @@
 FROM golang:1.15-buster AS builder
-ENV VERSION=6.1.1
+
+RUN export VERSION="$(cat VERSION)"
 
 # Copy sources
 WORKDIR /go/src/github.com/oauth2-proxy/oauth2-proxy

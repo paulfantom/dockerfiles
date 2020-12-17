@@ -1,9 +1,8 @@
 FROM golang as builder
 
-ENV VERSION=1.5.1
-
 WORKDIR /go/src/github.com/weaveworks
 
+RUN VERSION="$(cat VERSION)"
 # RUN git clone git@github.com:weaveworks/kured.git
 RUN wget https://github.com/weaveworks/kured/archive/$VERSION.tar.gz && \
     tar -xvf $VERSION.tar.gz && \

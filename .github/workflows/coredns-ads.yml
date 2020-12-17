@@ -25,7 +25,12 @@ jobs:
           CONTEXT=$(basename "${GITHUB_WORKFLOW}" .yml)
           CONTAINER_IMAGE=quay.io/${{ secrets.QUAY_USERNAME }}/${CONTEXT}
           SHORTREF=${GITHUB_SHA::8}
-          TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF}"
+          if [ -f "${CONTEXT}/VERSION" ]; then
+            VERSION=$(cat "${CONTEXT}/VERSION")
+            TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF},${CONTAINER_IMAGE}:VERSION"
+          else
+            TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF}"
+          fi
           MODIFIED="false"
           for file in ${{ steps.files.outputs.all }}; do
               if [[ "$file" =~ ^${CONTEXT}/ ]]; then
