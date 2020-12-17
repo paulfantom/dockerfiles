@@ -18,18 +18,56 @@ TIER="${TIER:-""}"
 
 TIMEOUT="${TIMEOUT:-"60m"}"
 
-set -euo pipefail
+set -Eeuo pipefail
 
-timeout_handler() {
+trap cleanup SIGINT SIGTERM ERR EXIT
+
+cleanup() {
 	if [ "$?" -eq 124 ]; then
 		echo "ERROR: one of restic commands timed out. Try changing TIMEOUT env to higher value."
 	fi
+	restic unlock --remove-all -v || echo "Couldn't unlock repository"
 }
 
+unlock() {
+	timeout "${TIMEOUT}" restic unlock --remove-all || exit 124
+}
+
+check() {
+	echo "INFO: checking repository state"
+	if ! timeout "$TIMEOUT" restic check; then
+		echo "ERROR: check operation took too long and was aborted. Continuing anyway."
+		unlock
+		return 1
+	fi
+}
+
+# TODO: Use json data to create metrics
+forget() {
+	echo "INFO: forgettting old snapshots"
+	# Do not run with `--prune` as it can take a long time and get into timeout boundry
+	if ! timeout "$TIMEOUT" restic forget --json --prune --keep-last 36 --keep-daily 7 --keep-weekly 8 --keep-monthly 12 --keep-yearly 2; then
+		echo "ERROR: forget operation took too long and was aborted. Continuing anyway."
+		unlock
+		return 1
+	fi
+}
+
+prune() {
+	echo "INFO: pruning old data"
+	if ! timeout "$TIMEOUT" restic prune --json; then
+		echo "ERROR: pruning took too long and was aborted. Continuing anyway."
+		unlock
+		return 1
+	fi
+}
+
+
 backup() {
-	local data stats snapshots metrics_url check_status prune_status
-	check_failed=0
-	prune_failed=0
+	local data stats snapshots metrics_url
+	local check_failed=0
+	local forget_failed=0
+	local prune_failed=0
 
 	# Initialize variables
 	if [ -n "$DATA_DIRECTORY" ]; then
@@ -72,12 +110,8 @@ EOF
 		timeout "$TIMEOUT" restic init
 	fi
 
-	echo "INFO: checking repository state"
-	if ! timeout "$TIMEOUT" restic check; then
-		echo "ERROR: check operation took too long and was aborted. Backup continues."
-		check_failed=1
-		timeout "$TIMEOUT" restic unlock --remove-all -v
-	fi
+	check
+	check_failed=$?
 
 	echo "INFO: starting new backup"
 	if [ -n "$DATA_DIRECTORY" ]; then
@@ -88,12 +122,11 @@ EOF
 		restic backup ${RESTIC_ARGS} --host "${INSTANCE:-"$(hostname)"}" --stdin --stdin-filename "${data}" < /tmp/database.raw
 	fi
 
-	echo "INFO: pruning unneeded data"
-	if ! timeout "$TIMEOUT" restic prune; then
-		echo "ERROR: prune operation took too long and was aborted. Backup continues."
-		prune_failed=1
-		timeout "$TIMEOUT" restic unlock --remove-all -v
-	fi
+	forget
+	forget_failed=$?
+
+	prune
+	prune_failed=$?
 
 	# statistics are not imporatant when not sent to monitoring
 	if [ -z "$PUSHGATEWAY_URL" ]; then
@@ -129,12 +162,16 @@ backup_files_total $(echo "$stats" | jq .total_file_count)
 # HELP backup_snapshots_total Total number of snapshots
 # TYPE backup_snapshots_total gauge
 backup_snapshots_total ${snapshots}
-# HELP backup_prune_failed Restic prune failure
-# TYPE backup_prune_failed gauge
-backup_prune_failed ${prune_failed}
+# HELP backup_forget_failed Restic forget failure
+# TYPE backup_forget_failed gauge
+backup_forget_failed ${forget_failed}
 # HELP backup_check_failed Restic check failure
 # TYPE backup_check_failed gauge
 backup_check_failed ${check_failed}
+# HELP backup_prune_failed Restic prune failure
+# TYPE backup_prune_failed gauge
+backup_prune_failed ${prune_failed}
+
 EOF
 	echo "INFO: Statistics exported. All done."
 }
@@ -172,7 +209,5 @@ check_restic_vars() {
 
 echo "INFO: Start restic backup"
 check_restic_vars
-
-trap timeout_handler EXIT
 
 backup
