@@ -4,15 +4,15 @@ RUN apk update && apk add --no-cache \
 	bash \
 	wget
 
-COPY VERSION /tmp/VERSION
-COPY download.sh /tmp/download.sh
+WORKDIR /tmp
+COPY VERSION VERSION
+COPY download.sh download.sh
 
 USER root
-WORKDIR /
-RUN chmod +x /tmp/download.sh && /tmp/download.sh
+RUN chmod +x download.sh && ./download.sh
 
 FROM gcr.io/distroless/static
 
-COPY --from=0 /coredns /coredns
+COPY --from=0 /tmp/coredns /coredns
 
 ENTRYPOINT [ "/coredns" ]
