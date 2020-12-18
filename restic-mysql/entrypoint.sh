@@ -46,7 +46,7 @@ check() {
 forget() {
 	echo "INFO: forgettting old snapshots"
 	# Do not run with `--prune` as it can take a long time and get into timeout boundry
-	if ! timeout "$TIMEOUT" restic forget --json --prune --keep-last 36 --keep-daily 7 --keep-weekly 8 --keep-monthly 12 --keep-yearly 2; then
+	if ! timeout "$TIMEOUT" restic forget --json --keep-last 36 --keep-daily 7 --keep-weekly 8 --keep-monthly 12 --keep-yearly 2; then
 		echo "ERROR: forget operation took too long and was aborted. Continuing anyway."
 		unlock
 		return 1
