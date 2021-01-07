@@ -18,7 +18,8 @@ TIER="${TIER:-""}"
 
 TIMEOUT="${TIMEOUT:-"60m"}"
 
-set -Eeuo pipefail
+# set -Eeuo pipefail
+set -o pipefail
 
 trap cleanup SIGINT SIGTERM ERR EXIT
 
