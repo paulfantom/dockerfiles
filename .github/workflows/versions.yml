@@ -1,0 +1,27 @@
+---
+name: "versions update"
+
+on:
+  schedule:
+  - cron: '13 12 * * *'
+
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Update versions
+        run: ./versions.sh
+
+      - name: Commit and push
+      - uses: EndBug/add-and-commit@v4
+        with:
+          add: '.'
+          author_name: "github-actions[bot]"
+          author_email: "github-actions@users.noreply.github.com"
+          message: 'automatic version update'
+        env:
+          # This is necessary in order to push a commit to the repo
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
