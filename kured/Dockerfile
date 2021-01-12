@@ -1,3 +1,6 @@
+# Metadata for version updater:
+# repository: https://github.com/weaveworks/kured
+
 FROM golang as builder
 
 COPY VERSION /tmp/VERSION

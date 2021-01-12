@@ -1,3 +1,6 @@
+# Metadata for version updater:
+# repository: https://github.com/machinezone/configmapsecrets
+
 FROM golang:1.14 as builder
 
 COPY VERSION /tmp/VERSION

@@ -1,3 +1,6 @@
+# Metadata for version updater:
+# repository: https://github.com/oauth2-proxy/oauth2-proxy
+
 FROM golang:1.15-buster AS builder
 
 COPY VERSION /tmp/VERSION

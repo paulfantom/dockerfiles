@@ -1,3 +1,6 @@
+# Metadata for version updater:
+# repository: https://github.com/arnarg/plex_exporter
+
 FROM alpine as builder
 
 RUN apk update && apk add --no-cache \
