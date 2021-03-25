@@ -14,7 +14,7 @@ COPY download.sh download.sh
 USER root
 RUN chmod +x download.sh && ./download.sh
 
-FROM gcr.io/distroless/static
+FROM alpine
 
 COPY --from=0 /tmp/coredns /coredns
 
