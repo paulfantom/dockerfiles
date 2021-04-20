@@ -1,7 +1,7 @@
 # Metadata for version updater:
 # repository: https://github.com/oauth2-proxy/oauth2-proxy
 
-FROM golang:1.15-buster AS builder
+FROM golang:1.16-buster AS builder
 
 COPY VERSION /tmp/VERSION
 
@@ -10,6 +10,8 @@ WORKDIR /go/src/github.com/oauth2-proxy/oauth2-proxy
 
 # Chekcout code
 RUN git clone --branch v$(cat /tmp/VERSION) https://github.com/oauth2-proxy/oauth2-proxy.git .
+
+RUN GO111MODULE=on go mod download
 
 # Build binary and make sure there is at least an empty key file.
 #  This is useful for GCP App Engine custom runtime builds, because
@@ -20,10 +22,10 @@ RUN git clone --branch v$(cat /tmp/VERSION) https://github.com/oauth2-proxy/oaut
 RUN VERSION=$(cat /tmp/VERSION) make build && touch jwt_signing_key.pem
 
 # Copy binary to alpine
-FROM alpine:3.12
+FROM alpine:3.13
+COPY --from=builder /etc/nsswitch.conf /etc/nsswitch.conf
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/oauth2-proxy /bin/oauth2-proxy
-COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/nsswitch.conf /etc/nsswitch.conf
 COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/jwt_signing_key.pem /etc/ssl/private/jwt_signing_key.pem
 
 USER 2000:2000
