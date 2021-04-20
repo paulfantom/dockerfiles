@@ -16,7 +16,7 @@ jobs:
         run: ./versions.sh
 
       - name: Commit and push
-      - uses: EndBug/add-and-commit@v4
+        uses: EndBug/add-and-commit@v4
         with:
           add: '.'
           author_name: "github-actions[bot]"
