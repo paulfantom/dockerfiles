@@ -15,13 +15,16 @@ jobs:
       - name: Update versions
         run: ./versions.sh
 
-      - name: Commit and push
-        uses: EndBug/add-and-commit@v4
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
         with:
-          add: '.'
-          author_name: "github-actions[bot]"
-          author_email: "github-actions@users.noreply.github.com"
-          message: 'automatic version update'
-        env:
-          # This is necessary in order to push a commit to the repo
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+          commit-message: "[bot] Automated version update"
+          title: "[bot] Automated version update"
+          body: |
+            This is an automated version update performed from CI on behalf of @paulfantom.
+            Configuration of the workflow is located in `.github/workflows/versions.yml`
+          assignees: paulfantom
+          labels: enhancement
+          branch: automated-updates
+          delete-branch: true
+          token: ${{ secrets.PAT_SECRET }}

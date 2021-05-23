@@ -26,7 +26,7 @@ jobs:
           CONTAINER_IMAGE=quay.io/${{ secrets.QUAY_USERNAME }}/${CONTEXT}
           SHORTREF=${GITHUB_SHA::8}
           if [ -f "${CONTEXT}/VERSION" ]; then
-            VERSION=$(cat "${CONTEXT}/VERSION")
+            VERSION=$(cat "${CONTEXT}/VERSION" | xargs)
             TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF},${CONTAINER_IMAGE}:${VERSION}"
           else
             TAGS="${CONTAINER_IMAGE}:latest,${CONTAINER_IMAGE}:${SHORTREF}"
