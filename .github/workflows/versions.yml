@@ -2,6 +2,7 @@
 name: "versions update"
 
 on:
+  workflow_dispatch:
   schedule:
   - cron: '13 12 * * *'
 

@@ -1,6 +1,7 @@
 # Container image name consists of QUAY_USERNAME and workflow name.
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
