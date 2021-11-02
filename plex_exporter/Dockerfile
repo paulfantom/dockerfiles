@@ -1,5 +1,5 @@
 # Metadata for version updater:
-# repository: https://github.com/arnarg/plex_exporter
+# repository: https://github.com/othalla/plex_exporter
 
 FROM alpine as builder
 
