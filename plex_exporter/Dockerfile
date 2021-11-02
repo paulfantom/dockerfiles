@@ -1,19 +1,15 @@
 # Metadata for version updater:
 # repository: https://github.com/othalla/plex_exporter
 
-FROM alpine as builder
+FROM ubuntu
 
-RUN apk update && apk add --no-cache \
-	bash \
-	wget
+RUN apt update && apt install wget -y && rm -rf /var/lib/apt/lists/*
 
 COPY VERSION /tmp/VERSION
 
 RUN VERSION=$(cat /tmp/VERSION); \
-    wget "https://github.com/othalla/plex_exporter/releases/download/v${VERSION}/plex_exporter-${VERSION}.linux-amd64" -O /tmp/plex_exporter && \
-    chmod +x /tmp/plex_exporter
+    wget "https://github.com/othalla/plex_exporter/releases/download/v${VERSION}/plex_exporter-${VERSION}.linux-amd64" -O /usr/bin/plex_exporter && \
+    chmod +x /usr/bin/plex_exporter
 
-FROM busybox
-COPY --from=builder /tmp/plex_exporter /usr/bin/plex_exporter
 EXPOSE 9594
 ENTRYPOINT ["/usr/bin/plex_exporter"]
