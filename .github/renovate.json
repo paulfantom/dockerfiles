@@ -1,0 +1,48 @@
+{
+  "timezone": "Etc/UTC",
+  "extends": [
+    "config:base",
+    "schedule:daily"
+  ],
+  "ignoreDeps": ["github.com/prometheus/prometheus"],
+  "dependencyDashboardLabels": ["dependencies"],
+  "labels": ["dependencies"],
+  "regexManagers": [
+    {
+      "fileMatch": ["^\\.github\\/workflows\\/[^/]+\\.ya?ml$"],
+      "matchStrings": ["golangci-lint-version:\\s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "golangci/golangci-lint"
+    },
+    {
+      "fileMatch": ["^kured/VERSION$"],
+      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "weaveworks/kured"
+    },
+    {
+      "fileMatch": ["^configmapsecrets-controller/VERSION$"],
+      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "machinezone/configmapsecrets"
+    },
+    {
+      "fileMatch": ["^oauth2-proxy/VERSION$"],
+      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "oauth2-proxy/oauth2-proxy"
+    },
+    {
+      "fileMatch": ["^plex_exporter/VERSION$"],
+      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "othalla/plex_exporter"
+    },
+    {
+      "fileMatch": ["^plex_exporter/VERSION$"],
+      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "othalla/plex_exporter"
+    }
+  ]
+}
