@@ -37,5 +37,12 @@
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "othalla/plex_exporter"
     }
+  ],
+  "packageRules": [
+    {
+      "groupName": "upstream",
+      "matchManagers": ["github-tags"],
+      "extractVersion": "^(?<version>\\d+\\.\\d+.\\d+)"
+    }
   ]
 }
