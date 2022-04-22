@@ -4,16 +4,9 @@
     "config:base",
     "schedule:daily"
   ],
-  "ignoreDeps": ["github.com/prometheus/prometheus"],
   "dependencyDashboardLabels": ["dependencies"],
   "labels": ["dependencies"],
   "regexManagers": [
-    {
-      "fileMatch": ["^\\.github\\/workflows\\/[^/]+\\.ya?ml$"],
-      "matchStrings": ["golangci-lint-version:\\s(?<currentValue>.*?)\\n"],
-      "datasourceTemplate": "github-tags",
-      "depNameTemplate": "golangci/golangci-lint"
-    },
     {
       "fileMatch": ["^kured/VERSION$"],
       "matchStrings": ["s(?<currentValue>.*?)\\n"],
