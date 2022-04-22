@@ -9,31 +9,31 @@
   "regexManagers": [
     {
       "fileMatch": ["^kured/VERSION$"],
-      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "weaveworks/kured"
     },
     {
       "fileMatch": ["^configmapsecrets-controller/VERSION$"],
-      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "machinezone/configmapsecrets"
     },
     {
       "fileMatch": ["^oauth2-proxy/VERSION$"],
-      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "oauth2-proxy/oauth2-proxy"
     },
     {
       "fileMatch": ["^plex_exporter/VERSION$"],
-      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "othalla/plex_exporter"
     },
     {
       "fileMatch": ["^plex_exporter/VERSION$"],
-      "matchStrings": ["s(?<currentValue>.*?)\\n"],
+      "matchStrings": ["(?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "othalla/plex_exporter"
     }
