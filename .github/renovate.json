@@ -42,7 +42,7 @@
     {
       "groupName": "upstream",
       "matchManagers": ["github-tags"],
-      "extractVersion": "^(?<version>\\d+\\.\\d+.\\d+)"
+      "extractVersion": "^v(?<version>.*)$"
     }
   ]
 }
