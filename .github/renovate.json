@@ -41,7 +41,7 @@
   "packageRules": [
     {
       "groupName": "upstream",
-      "matchManagers": ["github-tags"],
+      "matchManagers": ["regex"],
       "extractVersion": "^v(?<version>.*)$"
     }
   ]
