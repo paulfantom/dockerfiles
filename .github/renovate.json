@@ -42,7 +42,8 @@
     {
       "groupName": "upstream",
       "matchManagers": ["regex"],
-      "extractVersion": "^v(?<version>.*)$"
+      "extractVersion": "^v(?<version>.*)$",
+      "automerge": "true"
     }
   ]
 }
