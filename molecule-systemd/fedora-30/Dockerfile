@@ -1,4 +1,4 @@
-FROM fedora:30
+FROM fedora:39
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
