@@ -1,4 +1,4 @@
-FROM debian:9
+FROM debian:11
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
