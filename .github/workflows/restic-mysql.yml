@@ -67,7 +67,7 @@ jobs:
 
       - name: Build
         if: steps.prep.outputs.modified == 'true'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ${{ steps.prep.outputs.file_context }}
