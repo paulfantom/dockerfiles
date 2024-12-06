@@ -1,3 +1,3 @@
-FROM alpine:3.16
+FROM alpine:3.21
 
 RUN apk add --no-cache ca-certificates tzdata curl bash jq
