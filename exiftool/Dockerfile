@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.22
 
 COPY VERSION /tmp/VERSION
 

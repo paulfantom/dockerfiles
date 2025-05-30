@@ -22,7 +22,7 @@ RUN GO111MODULE=on go mod download
 RUN VERSION=$(cat /tmp/VERSION) make build && touch jwt_signing_key.pem
 
 # Copy binary to alpine
-FROM alpine:3.16
+FROM alpine:3.22
 COPY --from=builder /etc/nsswitch.conf /etc/nsswitch.conf
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/oauth2-proxy /bin/oauth2-proxy
