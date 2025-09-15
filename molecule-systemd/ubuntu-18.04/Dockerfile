@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
