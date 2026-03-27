@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:buster-20240612
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
