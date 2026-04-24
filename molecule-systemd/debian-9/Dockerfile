@@ -1,4 +1,4 @@
-FROM debian:9
+FROM debian:stretch-20220622
 MAINTAINER Pawel Krupa <paulfantom@gmail.com>
 
 ENV container docker
